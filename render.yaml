@@ -1,8 +1,8 @@
 # Live Workshop Codelab — Blueprint for Render Web Service + Postgres
 # https://render.com/docs/blueprint-spec
 #
-# After first deploy: set TUTOR_PASSWORD and VITE_GITHUB_REPO_URL in the Dashboard
-# (Blueprint env vars marked sync: false are entered manually).
+# Before Apply: set TUTOR_PASSWORD when the Blueprint prompts (sync: false).
+# VITE_GITHUB_REPO_URL, session codes, and SESSION_SIGNING_SECRET are set below.
 
 previews:
   generation: automatic
@@ -21,7 +21,7 @@ services:
     rootDir: .
     healthCheckPath: /healthz
     # Install devDependencies so tsx can run migrations at startup.
-    buildCommand: NODE_ENV=development npm ci && npm run build
+    buildCommand: NODE_ENV=development npm ci && NODE_ENV=development npm run build
     preDeployCommand: npm run db:migrate
     postDeployCommand: npm run db:seed
     startCommand: npm start

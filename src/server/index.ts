@@ -457,7 +457,7 @@ async function main() {
     );
   });
 
-  server.listen(port, () => {
+  server.listen(port, "0.0.0.0", () => {
     const hasClient = fs.existsSync(
       path.join(getRepoRoot(), "dist", "client", "index.html"),
     );
