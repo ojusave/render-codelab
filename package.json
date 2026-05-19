@@ -13,11 +13,11 @@
     "dev:server": "PORT=8787 tsx watch --env-file=.env src/server/index.ts",
     "dev:client": "vite dev --config vite.config.ts",
     "build": "vite build --config vite.config.ts && tsc -p tsconfig.server.json",
-    "start": "node --env-file=.env dist/server/index.js",
+    "start": "node dist/server/index.js",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx --env-file=.env scripts/migrate.ts",
-    "db:seed": "tsx --env-file=.env scripts/seed.ts",
-    "db:reset": "tsx --env-file=.env scripts/reset-session.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:reset": "tsx scripts/reset-session.ts",
     "lint": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.client.json --noEmit"
   },
   "dependencies": {

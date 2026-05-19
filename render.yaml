@@ -39,7 +39,7 @@ services:
       - key: TUTOR_PASSWORD
         sync: false
       - key: VITE_GITHUB_REPO_URL
-        sync: false
+        value: https://github.com/ojusave/render-codelab
       - key: VITE_DEFAULT_SESSION_CODE
         value: cascadia-2026
       - key: SEED_SESSION_CODE
