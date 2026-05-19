@@ -12,6 +12,6 @@
     "declaration": false,
     "noEmitOnError": true
   },
-  "include": ["src/server/**/*.ts"],
+  "include": ["src/server/**/*.ts", "src/server/cli/**/*.ts"],
   "exclude": ["node_modules"]
 }

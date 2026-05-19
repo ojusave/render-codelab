@@ -6,6 +6,13 @@ import http from "node:http";
 import path from "node:path";
 import { z } from "zod";
 import { WebSocketServer } from "ws";
+import {
+  getPort,
+  getPublicUrl,
+  getSigningSecret,
+  getTutorPassword,
+  isProduction,
+} from "./config.js";
 import { getRepoRoot } from "./lib/paths.js";
 import { titleForOrder } from "./lib/sessionLogic.js";
 import {
@@ -27,25 +34,11 @@ import {
   updateStudentProgress,
 } from "./services/workshop.js";
 
-function requireEnv(name: string, fallback?: string): string {
-  const v = process.env[name] ?? fallback;
-  if (!v) throw new Error(`Missing required env: ${name}`);
-  return v;
-}
-
-function getSigningSecret(): string {
-  return requireEnv(
-    "SESSION_SIGNING_SECRET",
-    process.env.NODE_ENV !== "production" ? "dev-insecure-secret" : undefined,
-  );
-}
-
-function getTutorPassword(): string {
-  return requireEnv("TUTOR_PASSWORD", process.env.NODE_ENV !== "production" ? "workshop" : undefined);
-}
-
 export function createApp(resolveSteps: () => LoadedStep[]) {
   const app = express();
+  if (isProduction()) {
+    app.set("trust proxy", 1);
+  }
   app.use(
     cors({
       origin: true,
@@ -390,7 +383,7 @@ export function createApp(resolveSteps: () => LoadedStep[]) {
 async function main() {
   watchContentInDev();
   const app = createApp(getSteps);
-  const port = Number(process.env.PORT ?? "8787");
+  const port = getPort();
 
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server, path: "/ws" });
@@ -458,14 +451,22 @@ async function main() {
   });
 
   server.listen(port, "0.0.0.0", () => {
+    const publicUrl = getPublicUrl();
     const hasClient = fs.existsSync(
       path.join(getRepoRoot(), "dist", "client", "index.html"),
     );
-    console.log(`API + WebSocket listening on http://localhost:${port}`);
-    if (hasClient) {
-      console.log(`Open the codelab at http://localhost:${port}`);
+    if (publicUrl) {
+      const sessionCode = process.env.SEED_SESSION_CODE?.trim() || "cascadia-2026";
+      console.log(`Workshop codelab listening on ${publicUrl}`);
+      if (hasClient) {
+        console.log(`Student: ${publicUrl}/s/${sessionCode}`);
+        console.log(`Tutor: ${publicUrl}/tutor/${sessionCode}`);
+      }
     } else {
-      console.log(`Run the Vite dev UI at http://localhost:5173 (proxies /api to :${port})`);
+      console.log(`API + WebSocket listening on 0.0.0.0:${port}`);
+      if (!hasClient && !isProduction()) {
+        console.log(`Build the client (npm run build) or run npm run dev:client for Vite on :5173`);
+      }
     }
   });
 }

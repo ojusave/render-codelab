@@ -1,153 +1,88 @@
 # Live Workshop Codelab
 
-A minimal **session-based codelab** for in-person workshops: students follow Markdown steps while the tutor drives a shared “pointer” and watches progress on a large dashboard. Built for **Render** (single Web service + **Postgres**), TypeScript end-to-end, with **WebSockets** for sub-second updates.
+Session-based workshop app for in-person events: students follow Markdown steps, tutors drive pace and watch progress. **Designed to run on Render** as one Web Service plus managed Postgres.
 
-## Features
-
-- **Students** (`/s/:sessionCode`): display name + localStorage token (no OAuth). Step nav, rendered Markdown (callouts, highlighted code with copy), **Done with this step**, **I'm stuck**, live tutor pointer in the header (informational only—students are not forced to match).
-- **Tutor** (`/tutor/:sessionCode`): shared password (`TUTOR_PASSWORD`). Summary counts, large readable roster with green / yellow / red status, pointer controls (next / prev / jump / reset).
-- **Content**: drop Markdown files under `content/` with frontmatter (`order`, `title`, optional `duration`). No migrations or admin UI for content.
-
-## Deploy on Render (under ~10 minutes)
+## Deploy on Render
 
 Repo: [github.com/ojusave/render-codelab](https://github.com/ojusave/render-codelab)
 
-**One-click Blueprint:**
+**Blueprint (Web + Postgres):**
 
 [Create Blueprint from repo](https://dashboard.render.com/blueprint/new?repo=https://github.com/ojusave/render-codelab)
 
-1. Open the link above (or **New → Blueprint** and select the repo).
-2. When prompted, set **`TUTOR_PASSWORD`** (shared tutor login for `/tutor/:sessionCode`).
-3. Click **Apply**. The Blueprint provisions **Postgres** (`workshop-codelab-db`) and the **web service** (`workshop-codelab`).
-4. First deploy runs `db:migrate` and `db:seed` (via `preDeployCommand`) for session **`cascadia-2026`**.
-5. Open the service URL → **Join student session** or `/s/cascadia-2026`. Tutor: `/tutor/cascadia-2026`.
+1. Click the link → connect GitHub → branch `main`.
+2. Set **`TUTOR_PASSWORD`** when prompted (only manual secret).
+3. Click **Apply**. Render creates:
+   - **Postgres** `workshop-codelab-db`
+   - **Web** `workshop-codelab`
+4. Build runs on Render (`npm install --include=dev && npm run build`).
+5. **Pre-deploy** runs compiled migrations + seed (`node dist/server/cli/*.js`).
+6. **Start** runs `node dist/server/index.js` on `PORT` (set by Render).
 
-`SESSION_SIGNING_SECRET` is auto-generated. `VITE_GITHUB_REPO_URL` defaults to this repo in `render.yaml`.
-
-Health check: `GET /healthz`.
-
-## Environment variables
-
-| Variable | Purpose |
-|----------|---------|
-| `DATABASE_URL` | Postgres connection string (Render injects from attached DB). |
-| `TUTOR_PASSWORD` | Tutor login for `/tutor/:sessionCode`. |
-| `SESSION_SIGNING_SECRET` | Signs HTTP-only tutor session cookies. |
-| `VITE_GITHUB_REPO_URL` | Public GitHub repo — baked into the client build for Deploy / GitHub links. |
-| `VITE_DEFAULT_SESSION_CODE` | Default session linked from the landing page (default `cascadia-2026`). |
-| `SEED_SESSION_CODE` | Session code created by `npm run db:seed` (default `cascadia-2026`). |
-| `CONTENT_DIR` | Optional absolute path to Markdown content (defaults to `./content` from repo root). |
-
-See `.env.example` for local development.
-
-## Workshop content (Ticker + Workflows)
-
-The default steps under `content/` walk through **workshop-demo** → **ticker-research-workflows** with [Render Workflows](https://render.com/docs/workflows). Files use a numeric prefix (`01-…md`) and are ordered by frontmatter `order` (currently 11 steps), not filename alone.
-
-**Local dev:** saving a step file reloads content automatically (watch the API terminal for `[content] reloaded N steps`). Only `NN-*.md` at the top of `content/` are steps; docs like `docs/content-schema.md` are ignored.
-
-**Production:** redeploy the web service after editing Markdown (content is cached at startup).
-
-## Add codelab steps
-
-1. Add a new `.md` file under `content/`.
-2. Include frontmatter:
-
-```yaml
----
-order: 4
-title: "Your step title"
-duration: 20
----
-
-Body with Markdown, code fences, images, etc.
-```
-
-The layout renders `title` as the page heading. Do not repeat it with a `#` heading in the body.
-
-3. Sort order is by **`order`** (integer). Redeploy after adding files (content is loaded at server startup).
-
-**Syntax:**
-
-- **Code**: fenced blocks with a language tag (` ```typescript `).
-- **Callouts**: GitHub-style alerts:
-
-```markdown
-> [!TIP]
-> Helpful hint here.
-
-> [!WARNING]
-> Something to watch for.
-```
-
-Supported kinds map to styles: `TIP`, `NOTE`, `WARNING`, `IMPORTANT` (case-insensitive).
-
-- **Images**: use paths relative to the Markdown file; files are served under `/content-files/...`.
-
-## Create or reuse a session
-
-Sessions are rows in Postgres (`workshop_sessions.code`). The seed script inserts one row if missing:
-
-```bash
-DATABASE_URL="postgresql://..." SEED_SESSION_CODE="my-event-2026" npm run db:seed
-```
-
-You can also insert manually:
-
-```sql
-INSERT INTO workshop_sessions (code, tutor_step_order)
-VALUES ('my-event-2026', 1);
-```
-
-(`tutor_step_order` should match a step `order` from your Markdown manifest—usually the first step.)
-
-## Run locally
-
-Prerequisites: Node 20+, Postgres running locally, `DATABASE_URL` pointing at it.
-
-```bash
-cp .env.example .env
-# Edit .env — set DATABASE_URL, TUTOR_PASSWORD, SESSION_SIGNING_SECRET
-
-npm install
-npm run db:migrate
-npm run db:seed
-```
-
-Terminal 1 — API + static (after build, or use dev):
-
-```bash
-PORT=8787 npm run dev:server
-```
-
-Terminal 2 — Vite dev client (proxies `/api` and `/ws` to :8787):
-
-```bash
-npm run dev:client
-```
-
-Or production-like:
-
-```bash
-npm run build
-PORT=8787 node dist/server/index.js
-```
-
-Open `http://localhost:5173` (Vite) or `http://localhost:8787` (all-in-one after build).
-
-## URLs
+After deploy, open your `*.onrender.com` URL:
 
 | Role | Path |
 |------|------|
 | Landing | `/` |
-| Student | `/s/:sessionCode` |
-| Tutor | `/tutor/:sessionCode` |
+| Student | `/s/cascadia-2026` |
+| Tutor | `/tutor/cascadia-2026` |
+
+Health check: `GET /healthz` → `ok`
+
+### Environment variables (Render)
+
+| Variable | Set by |
+|----------|--------|
+| `DATABASE_URL` | Blueprint → Postgres `workshop-codelab-db` |
+| `PORT` | Render (required in production) |
+| `RENDER_EXTERNAL_URL` | Render (public URL; logged at startup) |
+| `SESSION_SIGNING_SECRET` | Blueprint `generateValue: true` |
+| `TUTOR_PASSWORD` | You, at Blueprint apply |
+| `VITE_GITHUB_REPO_URL` | Blueprint (build-time, Deploy/GitHub links) |
+| `VITE_DEFAULT_SESSION_CODE` | Blueprint (`cascadia-2026`) |
+| `SEED_SESSION_CODE` | Blueprint (`cascadia-2026`) |
+
+Redeploy after editing Markdown under `content/` (loaded at server startup in production).
+
+## Features
+
+- **Students** (`/s/:sessionCode`): name + progress in browser storage; step nav, Markdown, Done / Stuck, live tutor pointer.
+- **Tutor** (`/tutor/:sessionCode`): password gate; roster, pointer controls.
+- **Content**: `content/NN-*.md` with frontmatter `order`, `title`, optional `duration`.
+
+## Workshop content
+
+11 steps: **workshop-demo** → **ticker-research-workflows** with [Render Workflows](https://render.com/docs/workflows). See `docs/content-schema.md` for the author contract.
+
+## Add or change steps
+
+1. Add `content/NN-your-step.md` with frontmatter (`order`, `title`).
+2. Commit and push → Render redeploys the web service.
+
+## Run locally (optional)
+
+Local dev mirrors production but uses Vite for hot reload. Requires Postgres and a `.env` file.
+
+```bash
+cp .env.example .env
+# Set DATABASE_URL, TUTOR_PASSWORD, SESSION_SIGNING_SECRET
+
+npm install
+npm run build
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
+
+- UI: http://localhost:5173 (proxies `/api` and `/ws` to the API)
+- API-only (production-like): `npm run build && PORT=8787 npm start` → http://localhost:8787
 
 ## Stack
 
-- **Backend**: Express, Drizzle ORM, `postgres` driver, `ws`, `marked` + `highlight.js`, `gray-matter`.
-- **Frontend**: React (Vite), React Router, TanStack Query, Tailwind CSS v4, lightweight workshop UI (Render logos via inline SVG).
-- **Realtime**: WebSocket `/ws` on the same HTTP server (fits Render’s single Web service model).
+- **Runtime on Render**: Node 22, Express, compiled server + static client in `dist/`
+- **Database**: Render Postgres, Drizzle ORM
+- **Client build**: Vite (build time only on Render, not a dev server in production)
+- **Realtime**: WebSocket `/ws` on the same service
 
 ## License
 

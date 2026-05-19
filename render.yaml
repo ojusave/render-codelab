@@ -1,8 +1,8 @@
-# Live Workshop Codelab — Blueprint for Render Web Service + Postgres
+# Live Workshop Codelab — Render Blueprint (Web Service + Postgres)
 # https://render.com/docs/blueprint-spec
 #
-# Before Apply: set TUTOR_PASSWORD when the Blueprint prompts (sync: false).
-# VITE_GITHUB_REPO_URL, session codes, and SESSION_SIGNING_SECRET are set below.
+# Apply: https://dashboard.render.com/blueprint/new?repo=https://github.com/ojusave/render-codelab
+# Set TUTOR_PASSWORD when prompted. All other vars are defined below.
 
 previews:
   generation: automatic
@@ -20,8 +20,8 @@ services:
     runtime: node
     plan: starter
     healthCheckPath: /healthz
-    # Install devDependencies so Vite/tsc/tsx are available at build and pre-deploy.
-    buildCommand: NODE_ENV=development npm ci && NODE_ENV=development npm run build
+    # Build client + server on Render; pre-deploy uses compiled JS (no tsx).
+    buildCommand: npm install --include=dev && npm run build
     preDeployCommand: npm run db:migrate && npm run db:seed
     startCommand: npm start
     envVars:
