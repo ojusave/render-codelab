@@ -1,12 +1,12 @@
 ---
-order: 9
+order: 8
 title: "Dispatch searchOne from the web service"
 duration: 25
 ---
 
-The **ticker-research-workflows** web service still runs [`research()`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/research.ts), but each search becomes a remote Workflow run. Synthesis stays local.
+The **ticker-research-workflows** web service still runs [`research()`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/research.ts), but each search will become a remote Workflow run once **Step 10** creates the Workflow service. Synthesis stays local.
 
-Requires Step 8: Workflow service live, slug copied, [Render API key](https://render.com/docs/api#1-create-an-api-key) ready.
+This step is **code only**. The app will not complete a search until Step 10. You need a [Render API key](https://render.com/docs/api#1-create-an-api-key) for Step 9 when you deploy the web service.
 
 ## A. SDK on the server package
 
@@ -88,6 +88,6 @@ With **four** parallel `startTask` calls, waiting on the SDK’s SSE-based `.get
 
 ## C. Push
 
-Commit and push. Web redeploy happens in Step 10 after env vars are set.
+Commit and push. Deploy the web service in **Step 9**. Creating the Workflow on Render waits until **Step 10**.
 
 Mark this step done when `research.ts` is pushed and `npm run build` at repo root succeeds.

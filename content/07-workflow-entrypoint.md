@@ -4,7 +4,7 @@ title: "Workflow entrypoint in tasks/"
 duration: 10
 ---
 
-The Workflow **runner** is a long-lived Node process. On start it must load every file that calls `task()`. This step adds that entrypoint. Still **no** Render Workflow service yet.
+The Workflow **runner** is a long-lived Node process. On start it must load every file that calls `task()`. This step adds that entrypoint. You still do **not** create anything on Render until **Step 10**.
 
 ## Create `tasks/src/index.ts`
 
@@ -36,10 +36,10 @@ npm run build
 npm run start
 ```
 
-The process should stay up (listening internally for the Workflow runtime). Ctrl+C to stop. Real execution happens on Render after Step 8.
+The process should stay up (listening internally for the Workflow runtime). Ctrl+C to stop. Real execution happens on Render in **Step 10**.
 
 ## Commit
 
-Commit `search.ts`, `index.ts`, `package.json`, and lockfile changes on your branch. You will connect Render to this commit in Step 8.
+Commit `search.ts`, `index.ts`, `package.json`, and lockfile changes on your branch. Push before you deploy in Steps 9–10.
 
 Mark this step done when `index.ts` exists and `npm run start` runs without an immediate crash after build.

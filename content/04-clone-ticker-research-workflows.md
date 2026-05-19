@@ -33,7 +33,7 @@ If your clone already contains Workflow code, compare to workshop-demo and reset
 | `render.yaml` | Web service Blueprint only — [see file](https://github.com/ojusave/ticker-research-workflows/blob/main/render.yaml) |
 
 > [!IMPORTANT]
-> [`render.yaml`](https://github.com/ojusave/ticker-research-workflows/blob/main/render.yaml) does **not** create a Workflow service. You add that in Step 8 **after** the task code exists.
+> [`render.yaml`](https://github.com/ojusave/ticker-research-workflows/blob/main/render.yaml) does **not** create a Workflow service. You create that on Render in **Step 10**, after all code is written and the web service is deployed.
 
 ## End state (what you are building toward)
 
@@ -56,9 +56,9 @@ Reference implementation style: Render’s [**file-processing**](https://github.
 
 1. Install SDK in `tasks/` and wrap `searchOne`.
 2. Add Workflow entrypoint (`tasks/src/index.ts`, `npm run start`).
-3. **Then** create the Workflow service on Render and deploy `tasks/`.
-4. Change `research.ts` + server SDK so the web app dispatches tasks.
-5. Deploy **your** web service and compare to the workshop-demo URL.
+3. Change `research.ts` + server SDK so the web app dispatches tasks (code only).
+4. Deploy **your** web service (searches will not work yet).
+5. **Last:** create the Render Workflow service, set `WORKFLOW_SERVICE_SLUG`, verify against **workshop-demo**.
 
 Keep the **workshop-demo** tab open for side-by-side runs at the end.
 

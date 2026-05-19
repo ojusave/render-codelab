@@ -61,7 +61,7 @@ You should see `export const searchOne = task( { … }, async function searchOne
 cd tasks && npm run build
 ```
 
-Fix TypeScript errors before moving on. Do **not** push to Render yet; the Workflow service does not exist until Step 8.
+Fix TypeScript errors before moving on. Do **not** create a Render Workflow service yet; that is **Step 10** (last).
 
 > [!NOTE]
 > **Image (add later):** diff highlighting export line — `content/images/06-searchone-task-wrap.png`.

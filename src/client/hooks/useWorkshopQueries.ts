@@ -31,7 +31,7 @@ export function useStepContent(sessionCode: string, order: number, enabled = tru
   return useQuery({
     queryKey: queryKeys.step(sessionCode, order),
     queryFn: () => fetchStepContent(sessionCode, order),
-    enabled: enabled && Boolean(sessionCode) && order > 0,
+    enabled: enabled && Boolean(sessionCode) && Number.isFinite(order),
     staleTime: 5 * 60_000,
   });
 }
