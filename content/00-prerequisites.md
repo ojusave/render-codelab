@@ -18,14 +18,6 @@ This page is setup only. **Step 1** starts with the shared demo.
 - How to register `searchOne` with `@renderinc/sdk`, dispatch it from the web service, and poll for results.
 - How to split **web** and **Workflow** on Render and wire them with `WORKFLOW_SERVICE_SLUG`.
 
-### What you'll need (in the room now)
-
-- This codelab: student session joined and display name set.
-- Browser tab for the tutor's **workshop-demo** URL (shared deploy, not yours).
-- **Git** and a terminal; an editor (VS Code or Cursor).
-
-You do **not** need `npm run dev` locally unless the tutor asks. Clones are for reading and editing during the lesson.
-
 ### What you'll need (before deploy)
 
 Gather these before **Step 9** (web) and **Step 10** (Workflow). Not required for Steps 1–8.
