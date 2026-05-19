@@ -53,6 +53,12 @@ body {
     -apple-system,
     sans-serif;
   color: #202124;
+  background: #fff;
+}
+
+html.dark body {
+  color: #e8eaed;
+  background: #202124;
 }
 
 h1,
@@ -302,6 +308,61 @@ html.dark .codelab-pre {
 .callout-caution::before {
   content: "Caution";
   color: #e37400;
+}
+
+html.dark .code-copy-btn {
+  border-color: #5f6368;
+  background: #3c4043;
+  color: #e8eaed;
+}
+
+html.dark .code-copy-btn:hover {
+  background: #5f6368;
+  color: #fff;
+}
+
+html.dark .callout {
+  border-color: #5f6368;
+  background: #35363a;
+  color: #e8eaed;
+}
+
+html.dark .callout-tip {
+  border-left-color: #8ab4f8;
+  background: #1e3a5f;
+}
+
+html.dark .callout-tip::before {
+  color: #8ab4f8;
+}
+
+html.dark .callout-note {
+  border-left-color: #9aa0a6;
+  background: #3c4043;
+}
+
+html.dark .callout-note::before {
+  color: #9aa0a6;
+}
+
+html.dark .callout-warning,
+html.dark .callout-caution {
+  border-left-color: #fbbf24;
+  background: #422006;
+}
+
+html.dark .callout-warning::before,
+html.dark .callout-caution::before {
+  color: #fbbf24;
+}
+
+html.dark .callout-important {
+  border-left-color: #f28b82;
+  background: #3c2020;
+}
+
+html.dark .callout-important::before {
+  color: #f28b82;
 }
 
 /* —— google-codelab-elements (codelab-tools) —— */

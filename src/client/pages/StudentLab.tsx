@@ -123,7 +123,7 @@ export function StudentLabPage() {
 
   if (isLoading && !bootstrap) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f8f9fa] text-[#5f6368]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f8f9fa] text-[#5f6368] dark:bg-[#202124] dark:text-[#9aa0a6]">
         <Spinner size="lg" />
         <p>Loading session…</p>
       </div>
@@ -145,17 +145,17 @@ export function StudentLabPage() {
 
   if (showName) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#f8f9fa]">
+      <div className="flex min-h-screen flex-col bg-[#f8f9fa] dark:bg-[#202124]">
         <Navigation sticky logo={<RenderLogo variant="full" height={24} />} />
         <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-6 py-12">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-[#1967d2]">
               Session {sessionCode}
             </p>
-            <h1 className="mt-2 font-[family-name:Roboto] text-3xl font-light text-[#202124]">
+            <h1 className="mt-2 font-[family-name:Roboto] text-3xl font-light text-[#202124] dark:text-[#e8eaed]">
               Join the codelab
             </h1>
-            <p className="mt-2 text-[#5f6368]">
+            <p className="mt-2 text-[#5f6368] dark:text-[#9aa0a6]">
               Enter the name that should appear on the tutor screen.
             </p>
           </div>

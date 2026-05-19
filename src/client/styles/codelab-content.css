@@ -239,6 +239,47 @@ html.dark .codelab-content aside {
 html.dark .codelab-content aside.warning {
   background: #422006;
   border-color: #fbbf24;
+  color: #fde68a;
+}
+
+html.dark .codelab-content h2 {
+  border-bottom-color: #5f6368;
+}
+
+html.dark .codelab-content blockquote {
+  border-left-color: #5f6368;
+  color: #9aa0a6;
+}
+
+html.dark .codelab-content hr {
+  border-top-color: #5f6368;
+}
+
+html.dark .codelab-content th,
+html.dark .codelab-content td {
+  border-color: #5f6368;
+}
+
+html.dark .codelab-content th {
+  background: #3c4043;
+  color: #e8eaed;
+}
+
+html.dark .codelab-content tr:nth-child(even) td {
+  background: #292a2d;
+}
+
+html.dark .codelab-content code:not(pre code) {
+  background: #3c4043;
+  color: #f28b82;
+}
+
+html.dark .codelab-content img {
+  border-color: #5f6368;
+}
+
+html.dark .codelab-content-empty {
+  color: #9aa0a6;
 }
 
 .codelab-content-empty {

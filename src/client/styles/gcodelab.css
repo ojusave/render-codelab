@@ -394,8 +394,9 @@ html.dark .gcodelab-drawer-title {
 }
 
 html.dark .gcodelab-instructions {
-  background: #292a2d;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+  background: #35363a;
+  border: 1px solid #5f6368;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
 }
 
 .gcodelab-loading {
@@ -412,6 +413,65 @@ html.dark .gcodelab-instructions {
   padding: 2rem;
   text-align: center;
   color: #5f6368;
+}
+
+/* —— Dark mode: drawer steps + chrome (contrast fixes) —— */
+html.dark .gcodelab-drawer-meta,
+html.dark .gcodelab-drawer-progress-label,
+html.dark .gcodelab-step-duration,
+html.dark .gcodelab-loading,
+html.dark .gcodelab-empty {
+  color: #9aa0a6;
+}
+
+html.dark .gcodelab-drawer-progress-track {
+  background: #5f6368;
+}
+
+html.dark .gcodelab-drawer-progress-fill {
+  background: #8ab4f8;
+}
+
+html.dark .gcodelab-step-item {
+  color: #e8eaed;
+}
+
+html.dark .gcodelab-step-item:hover {
+  background: #3c4043;
+}
+
+html.dark .gcodelab-step-item--active {
+  background: #1e3a5f;
+  border-left-color: #8ab4f8;
+  color: #8ab4f8;
+}
+
+html.dark .gcodelab-step-item--active .gcodelab-step-name {
+  color: #8ab4f8;
+}
+
+html.dark .gcodelab-step-item--tutor:not(.gcodelab-step-item--active) {
+  background: #3c3520;
+  border-left-color: #fbbf24;
+}
+
+html.dark .gcodelab-step-icon {
+  background: #3c4043;
+  color: #bdc1c6;
+}
+
+html.dark .gcodelab-step-item--active .gcodelab-step-icon {
+  background: #8ab4f8;
+  color: #202124;
+}
+
+html.dark .gcodelab-step-item--done .gcodelab-step-icon {
+  background: #1e3d26;
+  color: #81c995;
+}
+
+html.dark .gcodelab-step-item--done:not(.gcodelab-step-item--active) {
+  color: #e8eaed;
 }
 
 /* Tutor roster (right panel) */
