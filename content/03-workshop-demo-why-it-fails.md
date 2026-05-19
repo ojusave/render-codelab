@@ -1,25 +1,28 @@
 ---
 order: 3
-title: "Why workshop-demo usually fails"
+title: "See why runs fail"
 duration: 4
 ---
 
-The shared **workshop-demo** deploy is configured to fail often on purpose. The goal is to see how **one throwing promise** inside `Promise.all` ends the whole run.
+The shared **workshop-demo** deploy fails on purpose. One rejected promise inside `Promise.all` ends the entire run.
 
-## Reproduce on the shared demo
+### What you'll do
 
-Run **four or five** queries on the tutor URL. Watch for:
+1. Run several queries on the tutor URL and watch failed vs aborted cards.
+2. Read `maybeFail` in `tasks/src/search.ts`.
+3. Connect that behavior to `Promise.all` in `research.ts`.
 
-- One or more cards showing an error (fake “Exa rate limit”).
-- Other cards flipping to **aborted** even if they were running.
+### Reproduce
+
+Run **four or five** queries. You may see:
+
+- One card error (fake “Exa rate limit”).
+- Other cards **aborted** even if they were running.
 - No synthesis phase.
 
-> [!NOTE]
-> **Image (add later):** one failed card, others aborted — `content/images/03-workshop-demo-failure.png`.
+### `maybeFail`
 
-## The fake failure: `maybeFail`
-
-In your clone, open [`tasks/src/search.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/search.ts).
+In your clone, open [`tasks/src/search.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/search.ts):
 
 ```typescript
 function maybeFail(query: string) {
@@ -29,25 +32,26 @@ function maybeFail(query: string) {
 }
 ```
 
-`searchOne` calls `maybeFail(spec.query)` **before** the real Exa client runs. The message looks like infrastructure; it is not. Exa may be fine.
+`searchOne` calls this **before** the real Exa client. The message looks like infrastructure; it is not.
 
-## Why one failure stops everything
+### Why one failure stops everything
 
-Back in [`tasks/src/research.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/research.ts), the `map` callback does not catch errors from `searchOne`. `Promise.all` rejects on the first rejection. The outer `research()` promise rejects, `runner.ts` emits `{ type: 'failed', error }`, and the UI never reaches synthesis.
+In [`tasks/src/research.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/research.ts), the `map` callback does not catch errors. `Promise.all` rejects on the first rejection. `runner.ts` emits `{ type: 'failed', error }`; synthesis never runs.
 
-Independence of searches: each has a 70% chance to “succeed” through `maybeFail`. All four must pass: `0.7^4 ≈ 0.24`. So roughly **one run in four** completes under this toy model. Your live results will jitter because the randomness is real.
+Each search has ~70% chance to pass `maybeFail`. All four must pass: `0.7^4 ≈ 24%` completion under this toy model. Live results will jitter.
 
-## What we are not changing in workshop-demo
+> [!IMPORTANT]
+> The fix is not a bigger try/catch in the web process. On [Render Workflows](https://render.com/docs/workflows), each task run gets its own instance and [automatic retries](https://render.com/docs/workflows-defining#retry-logic) when the function throws (our `maybeFail` counts as a failure).
 
-We leave workshop-demo as the **before** picture. The fix is not “bigger try/catch in the web process.” The fix is to run each search as an isolated unit with **its own retry budget** on Render Workflows, orchestrated from a second repo.
+### What changes in your repo
 
-## Bridge to the next repo
-
-| | workshop-demo | ticker-research-workflows (you build this) |
-|--|---------------|---------------------------------------------|
-| Deploy in room | Tutor URL only | **You** deploy at the end |
-| `searchOne` | Plain async function in web process | `task({ name: 'searchOne', retry… })` on a Workflow service |
+| | workshop-demo | ticker-research-workflows (you) |
+|--|---------------|----------------------------------|
+| Deploy in room | Tutor URL only | You deploy at the end |
+| `searchOne` | Plain async in web process | `task({ name: 'searchOne', retry… })` on Workflow |
 | `research()` | `await searchOne(...)` in process | `startTask` + poll `getTaskRun` |
 | Synthesis | Web service | Still web service |
 
-Mark this step done when you have read `maybeFail` and `Promise.all` and seen at least one failed run on the shared demo.
+We leave **workshop-demo** as the “before” picture.
+
+**Continue when** you have read `maybeFail` and `Promise.all` and seen at least one failed run on the shared demo.

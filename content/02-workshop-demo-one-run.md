@@ -1,44 +1,34 @@
 ---
 order: 2
-title: "Trace one run through workshop-demo"
+title: "Trace one research run"
 duration: 4
 ---
 
-Pick a query on the **shared workshop-demo** URL, for example `TSLA`. This step maps what you see in the UI to concrete files in the repo you cloned.
+Run a query on the **shared workshop-demo** (for example `TSLA`) and map what you see in the UI to files in your clone.
 
-## Browser → server
+### What you'll do
 
-1. The UI posts to **`POST /api/research`** with JSON `{ "query": "TSLA" }` (see [`server/src/index.ts`](https://github.com/ojusave/workshop-demo/blob/main/server/src/index.ts)).
-2. The handler calls [`startResearch(query)`](https://github.com/ojusave/workshop-demo/blob/main/server/src/runner.ts) in `server/src/runner.ts`.
-3. `startResearch` generates a `runId`, stores listeners in memory, and calls **`research(query, onEvent)`** from [`tasks/src/research.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/research.ts). It does not await the full pipeline before responding.
-4. The HTTP response is `{ "runId": "…" }`.
-5. The UI opens **`GET /api/research/:runId/events`** as an `EventSource`. Each SSE message is one `ResearchEvent` JSON object.
+1. Submit a query on the shared URL.
+2. Follow the request from browser → server → `research()` → four `searchOne` calls → synthesis.
+3. Name which file emits `search:running` for a given card index.
 
-If the connection drops or the run ends, the stream closes. The UI state machine lives in [`ui/src/App.tsx`](https://github.com/ojusave/workshop-demo/blob/main/ui/src/App.tsx).
+### Browser → server
 
-> [!NOTE]
-> **Image (add later):** four search cards + activity log mid-run — `content/images/02-workshop-demo-four-cards.png`.
+1. UI posts **`POST /api/research`** with `{ "query": "TSLA" }` ([`server/src/index.ts`](https://github.com/ojusave/workshop-demo/blob/main/server/src/index.ts)).
+2. Handler calls [`startResearch(query)`](https://github.com/ojusave/workshop-demo/blob/main/server/src/runner.ts).
+3. `startResearch` creates a `runId`, stores listeners, and calls **`research(query, onEvent)`** from [`tasks/src/research.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/research.ts) without awaiting the full pipeline.
+4. HTTP response: `{ "runId": "…" }`.
+5. UI opens **`GET /api/research/:runId/events`** as `EventSource`. Each message is one `ResearchEvent`.
 
-## Inside `research()`
+UI state lives in [`ui/src/App.tsx`](https://github.com/ojusave/workshop-demo/blob/main/ui/src/App.tsx).
 
-Open `tasks/src/research.ts` in your clone.
+### Inside `research()`
 
-**Step A — plan four searches**
+Open `tasks/src/research.ts`.
 
-[`buildQueries(query)`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/queries.ts) returns four `SearchSpec` objects. For `TSLA` they look like:
+**Plan four searches** — [`buildQueries(query)`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/queries.ts) returns four specs (price, news, commentary, risks). First event: `{ type: 'started', query, queries: string[] }`.
 
-| Index | Intent | Example query shape |
-|-------|--------|---------------------|
-| 0 | Price | `TSLA stock price share price quote …` + date window |
-| 1 | News | `TSLA breaking news …` |
-| 2 | Commentary | `TSLA analyst commentary …` |
-| 3 | Risks | `TSLA risks outlook …` |
-
-Dates come from [`tasks/src/dates.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/dates.ts) (`researchDates()`).
-
-The first event is `{ type: 'started', query, queries: string[] }`. The UI uses `queries` to label the four cards.
-
-**Step B — four parallel searches**
+**Run four in parallel:**
 
 ```typescript
 const results = await Promise.all(
@@ -51,20 +41,17 @@ const results = await Promise.all(
 )
 ```
 
-Each `searchOne` call is in [`tasks/src/search.ts`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/search.ts). It uses **Exa** (`searchAndContents`, five results, up to 2000 chars text per hit). All four run in the **same Node process** as Express because workshop-demo is a single web service.
+Each [`searchOne`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/search.ts) calls **Exa** in the **same Node process** as Express (single web service).
 
-**Step C — sources list**
+**Sources** — [`buildIndexedArticles`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/sources.ts) → `{ type: 'sources', sources }`.
 
-[`buildIndexedArticles`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/sources.ts) merges hits. The UI gets `{ type: 'sources', sources: SourceRef[] }`.
+**Synthesis** — [`synthesize()`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/synthesize.ts) streams Claude: `synthesizing`, `synthesis:chunk`, then `{ type: 'done', memo }`.
 
-**Step D — synthesis**
+### Quick check
 
-[`synthesize()`](https://github.com/ojusave/workshop-demo/blob/main/tasks/src/synthesize.ts) streams Claude output. Events: `synthesizing`, many `synthesis:chunk`, then `{ type: 'done', memo }`.
+While a run is in progress, which file would emit `search:running` for index `2`?
 
-## Exercise on the shared demo
+> [!TIP]
+> Answer: the `map` callback in `research.ts` (before `await searchOne`).
 
-1. Run `TSLA` (or `NVDA`).
-2. While it runs, name which file would emit `search:running` for index `2`.
-3. If all four cards go green, skim the memo. If not, still read the activity log: you will use failures in the next step.
-
-Mark this step done when you can explain the path from the text box to `searchOne` without opening the repo.
+**Continue when** you can explain the path from the text box to `searchOne` without opening the repo.

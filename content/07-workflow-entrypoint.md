@@ -1,34 +1,47 @@
 ---
 order: 7
-title: "Workflow entrypoint in tasks/"
+title: "Add the Workflow entrypoint"
 duration: 2
 ---
 
-The Workflow **runner** is a long-lived Node process. On start it must load every file that calls `task()`. This step adds that entrypoint. You still do **not** create anything on Render until **Step 10**.
+A **workflow service** loads every module that calls `task()` when it starts ([organizing tasks](https://render.com/docs/workflows-defining#organizing-tasks)). This step adds that entrypoint. You still do **not** create anything on Render until **Step 10**.
 
-## Create `tasks/src/index.ts`
+### What you'll do
 
-New file:
+1. Create `tasks/src/index.ts` that imports `./search.js`.
+2. Add a `start` script in `tasks/package.json` (your Workflow **Start Command** on Render).
+3. Optionally smoke-test `npm run start` locally.
+
+### Create `tasks/src/index.ts`
 
 ```typescript
 import './search.js'
 ```
 
-The `.js` extension is required for Node ESM after `tsc`. Importing `search.ts` runs the `task({ name: 'searchOne', …})` registration side effect.
+The `.js` extension is required for Node ESM after `tsc`. Importing `search.ts` runs the `task({ name: 'searchOne', … })` registration side effect.
 
-Compare to [file-processing `src/index.ts`](https://github.com/render-examples/render-workflows-examples-ts/blob/main/file-processing/src/index.ts): one import per task module.
+This matches the TypeScript pattern in [Defining Workflow Tasks — organizing tasks](https://render.com/docs/workflows-defining#organizing-tasks):
 
-## Add `start` in `tasks/package.json`
+```typescript
+import './math-tasks'
+import './text-tasks'
+```
 
-Under `"scripts"`, ensure JSON is valid (comma after `"build": "tsc"`):
+We only have one task file for now.
+
+### Add `start` in `tasks/package.json`
+
+Under `"scripts"` (valid JSON, comma after `"build"`):
 
 ```json
 "start": "node dist/tasks/src/index.js"
 ```
 
-Because `rootDir` is `".."` in `tasks/tsconfig.json`, compiled output is **`dist/tasks/src/index.js`**, not `dist/src/index.js`.
+With `"rootDir": ".."`, compiled output is **`dist/tasks/src/index.js`**, not `dist/src/index.js`.
 
-## Local smoke (optional)
+On Render, **Start Command** will be `npm run start` ([Your First Workflow](https://render.com/docs/workflows-tutorial#4-create-a-workflow-service)).
+
+### Optional local smoke
 
 ```bash
 cd tasks
@@ -36,10 +49,10 @@ npm run build
 npm run start
 ```
 
-The process should stay up (listening internally for the Workflow runtime). Ctrl+C to stop. Real execution happens on Render in **Step 10**.
+Process should stay up. Ctrl+C to stop. Real task runs happen on Render in **Step 10** (or [test locally](https://render.com/docs/workflows-local-development) if the tutor has time).
 
-## Commit
+### Commit
 
-Commit `search.ts`, `index.ts`, `package.json`, and lockfile changes on your branch. Push before you deploy in Steps 9–10.
+Commit `search.ts`, `index.ts`, `package.json`, and lockfile. Push before Steps 9–10.
 
-Mark this step done when `index.ts` exists and `npm run start` runs without an immediate crash after build.
+**Continue when** `index.ts` exists and `npm run start` does not crash immediately after build.

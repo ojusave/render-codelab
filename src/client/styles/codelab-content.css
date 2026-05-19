@@ -75,10 +75,16 @@ html.dark .codelab-content h6 {
   color: #e8eaed;
 }
 
+.codelab-content > h2:first-child,
+.codelab-content > aside:first-child + h2 {
+  margin-top: 0;
+}
+
 .codelab-content h2 {
-  margin: 2rem 0 0.75rem;
+  margin: 1.75rem 0 0.65rem;
   padding-bottom: 0.35rem;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
+  font-weight: 500;
   border-bottom: 1px solid #e8eaed;
 }
 
@@ -102,10 +108,24 @@ html.dark .codelab-content h6 {
 .codelab-content ol {
   margin: 0.75rem 0;
   padding-left: 1.5rem;
+  list-style-type: decimal;
+}
+
+.codelab-content ul {
+  list-style-type: disc;
 }
 
 .codelab-content li {
-  margin: 0.35rem 0;
+  margin: 0.5rem 0;
+  padding-left: 0.15rem;
+}
+
+.codelab-content li::marker {
+  color: #5f6368;
+}
+
+html.dark .codelab-content li::marker {
+  color: #9aa0a6;
 }
 
 .codelab-content li > ul,
@@ -206,23 +226,73 @@ html.dark .codelab-content b {
 /* GitHub alerts → aside (class set server-side) */
 .codelab-content aside {
   margin: 1.25rem 0;
-  padding: 16px 20px;
-  border-radius: 4px;
-  border-left: 4px solid #1967d2;
+  padding: 0.75rem 1rem 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d2e3fc;
+  border-left-width: 4px;
   background: #e8f0fe;
   color: #3c4043;
+  font-size: 0.9375rem;
+}
+
+.codelab-content aside::before {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.codelab-content aside.note {
+  border-color: #dadce0;
+  border-left-color: #5f6368;
+  background: #f8f9fa;
+}
+
+.codelab-content aside.note::before {
+  content: "Note";
+  color: #5f6368;
+}
+
+.codelab-content aside.tip {
+  border-color: #ceead6;
+  border-left-color: #188038;
+  background: #e6f4ea;
+}
+
+.codelab-content aside.tip::before {
+  content: "Tip";
+  color: #188038;
+}
+
+.codelab-content aside.important {
+  border-color: #f9dedc;
+  border-left-color: #d93025;
+  background: #fce8e6;
+}
+
+.codelab-content aside.important::before {
+  content: "Important";
+  color: #d93025;
 }
 
 .codelab-content aside.warning {
+  border-color: #feefc3;
   border-left-color: #e37400;
   background: #fef7e0;
 }
 
-.codelab-content aside p {
-  margin: 0.5rem 0;
+.codelab-content aside.warning::before {
+  content: "Warning";
+  color: #e37400;
 }
 
-.codelab-content aside p:first-child {
+.codelab-content aside p {
+  margin: 0.35rem 0;
+}
+
+.codelab-content aside p:first-of-type {
   margin-top: 0;
 }
 
@@ -230,15 +300,31 @@ html.dark .codelab-content b {
   margin-bottom: 0;
 }
 
-html.dark .codelab-content aside {
-  background: #1e3a5f;
-  border-color: #8ab4f8;
+html.dark .codelab-content aside.note {
+  border-color: #5f6368;
+  border-left-color: #9aa0a6;
+  background: #3c4043;
+  color: #e8eaed;
+}
+
+html.dark .codelab-content aside.tip {
+  border-color: #1e3d26;
+  border-left-color: #81c995;
+  background: #1e3d26;
+  color: #e8eaed;
+}
+
+html.dark .codelab-content aside.important {
+  border-color: #5c2b2b;
+  border-left-color: #f28b82;
+  background: #3c2020;
   color: #e8eaed;
 }
 
 html.dark .codelab-content aside.warning {
+  border-color: #5c4a1f;
+  border-left-color: #fbbf24;
   background: #422006;
-  border-color: #fbbf24;
   color: #fde68a;
 }
 

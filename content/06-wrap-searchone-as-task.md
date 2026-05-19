@@ -1,22 +1,28 @@
 ---
 order: 6
-title: "Wrap searchOne in task()"
+title: "Register searchOne as a task"
 duration: 6
 ---
 
-Edit **only** [`tasks/src/search.ts`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/search.ts) in **ticker-research-workflows**. Do not touch `maybeFail`, `getExa`, or the Exa `searchAndContents` body. The workshop keeps the same flaky search; Workflows adds retries around it.
+Wrap **`searchOne`** in [`task()`](https://render.com/docs/workflows-sdk-typescript#the-task-function) in **ticker-research-workflows** only. Do not change `maybeFail`, `getExa`, or the Exa call body: the workshop keeps the same flaky search; [retry logic](https://render.com/docs/workflows-defining#retry-logic) on the Workflow absorbs most flakes.
 
-## 1. Import `task`
+### What you'll do
 
-At the top:
+1. Import `task` from `@renderinc/sdk/workflows`.
+2. Replace `export async function searchOne` with `export const searchOne = task({ … }, async function …)`.
+3. Build and fix any TypeScript errors.
+
+### Import
+
+At the top of [`tasks/src/search.ts`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/search.ts):
 
 ```typescript
 import { task } from '@renderinc/sdk/workflows'
 ```
 
-## 2. Change the export
+### Replace the export
 
-**Find** (workshop-demo shape):
+**Find:**
 
 ```typescript
 export async function searchOne(
@@ -37,16 +43,16 @@ export const searchOne = task(
 
 | Field | Why |
 |-------|-----|
-| `name: 'searchOne'` | Becomes the task id in the Dashboard and in `startTask('slug/searchOne', …)` |
-| `plan: 'starter'` | Matches a light Exa call; adjust if your tutor uses a different plan |
-| `timeoutSeconds: 120` | Room for Exa latency |
-| `retry.maxRetries: 3` | `maybeFail` is 30% per attempt; retries absorb most flakes |
+| `name: 'searchOne'` | Becomes part of the task slug `{workflow-slug}/searchOne` used in `startTask` ([task arguments](https://render.com/docs/workflows-defining#task-arguments)) |
+| `plan: 'starter'` | Light Exa call ([instance type](https://render.com/docs/workflows-defining#instance-type-compute-specs)) |
+| `timeoutSeconds: 120` | Room for Exa latency ([timeout](https://render.com/docs/workflows-defining#timeout)) |
+| `retry.maxRetries: 3` | Up to four attempts total when `maybeFail` throws ([customizing retries](https://render.com/docs/workflows-defining#customizing-retries)) |
 
-Same pattern as [`file-processing` tasks](https://github.com/render-examples/render-workflows-examples-ts/tree/main/file-processing/src).
+Same shape as the SDK's `flipCoin` retry example in [Defining Workflow Tasks](https://render.com/docs/workflows-defining#customizing-retries).
 
-## 3. Close the `task()` call
+### Close the `task()` call
 
-At the **end** of the function, the file currently ends with a single `}` for `searchOne`. **Replace that closing brace** with:
+At the **end** of the function, replace the final `}` for `searchOne` with:
 
 ```typescript
   },
@@ -55,15 +61,16 @@ At the **end** of the function, the file currently ends with a single `}` for `s
 
 You should see `export const searchOne = task( { … }, async function searchOne(…) { … }, )`.
 
-## 4. Build locally
+### Build
 
 ```bash
 cd tasks && npm run build
 ```
 
-Fix TypeScript errors before moving on. Do **not** create a Render Workflow service yet; that is **Step 10** (last).
+> [!NOTE]
+> We are **not** [chaining](https://render.com/docs/workflows-defining#chaining-task-runs) `searchOne` from another task inside the Workflow. The web service will trigger runs in Step 8 ([running a task in a different workflow](https://render.com/docs/workflows-defining#chaining-task-runs)).
 
 > [!NOTE]
-> **Image (add later):** diff highlighting export line — `content/images/06-searchone-task-wrap.png`.
+> Do not create a Render Workflow service yet. That is **Step 10** ([Your First Workflow](https://render.com/docs/workflows-tutorial#4-create-a-workflow-service)).
 
-Mark this step done when `search.ts` compiles and still contains `maybeFail` unchanged.
+**Continue when** `search.ts` compiles and `maybeFail` is unchanged.

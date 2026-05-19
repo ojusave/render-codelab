@@ -1,12 +1,17 @@
 ---
 order: 5
-title: "Add @renderinc/sdk to tasks/"
+title: "Install the Workflows SDK"
 duration: 2
 ---
 
-All changes in this step stay in the **`tasks/`** package. You are not creating a Render service yet.
+Add `@renderinc/sdk` to the **`tasks/`** package so you can [define tasks](https://render.com/docs/workflows-defining). No Render Workflow service is created in this step.
 
-## Install
+### What you'll do
+
+1. Install `@renderinc/sdk` (^0.5.0) in `tasks/`.
+2. Run `npm run build` to confirm the package still compiles.
+
+### Install
 
 From repo root:
 
@@ -15,23 +20,23 @@ cd tasks
 npm install @renderinc/sdk@^0.5.0
 ```
 
-Confirm `package.json` lists `@renderinc/sdk` under `dependencies`.
+Confirm `package.json` lists `@renderinc/sdk` under `dependencies` at `^0.5.0` or later ([Defining Workflow Tasks — install](https://render.com/docs/workflows-defining#first-install-the-render-sdk)).
 
-Docs: [Workflows SDK](https://render.com/docs/workflows/sdk) · npm: [`@renderinc/sdk`](https://www.npmjs.com/package/@renderinc/sdk).
+### What you get
 
-## What this package gives you
+- **`task`** from `@renderinc/sdk/workflows` — registers a function the Workflow runner can execute ([`task()` reference](https://render.com/docs/workflows-sdk-typescript#the-task-function)).
+- Later, **`Render`** from `@renderinc/sdk` on the **server** to [trigger runs](https://render.com/docs/workflows-running) with `startTask` and `getTaskRun`.
 
-- **`task`** from `@renderinc/sdk/workflows` — registers a named function the Workflow runner can execute and retry.
-- Later, the **web** package will use `Render` from `@renderinc/sdk` (not from `/workflows`) to call `startTask` and `getTaskRun`.
+Do not add the SDK to `server/` until Step 8.
 
-Do not add the SDK to `server/` until Step 9.
-
-## Sanity check
+### Build check
 
 ```bash
 npm run build
 ```
 
-`tasks/tsconfig.json` compiles with `"rootDir": ".."`, so output lands under `tasks/dist/tasks/src/`. A clean build should still succeed before you change `search.ts`.
+`tasks/tsconfig.json` uses `"rootDir": ".."`, so output lands under `tasks/dist/tasks/src/`. Build should pass before you change `search.ts`.
 
-Mark this step done when `tasks/package.json` includes `@renderinc/sdk` and `npm run build` passes in `tasks/`.
+**Docs:** [Workflows SDK for TypeScript](https://render.com/docs/workflows-sdk-typescript)
+
+**Continue when** `tasks/package.json` includes `@renderinc/sdk` and `npm run build` passes in `tasks/`.

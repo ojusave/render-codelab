@@ -32,9 +32,32 @@ Filenames are for authors only. Step order comes from `order`, not from the file
 ## Body content
 
 - Standard Markdown (headings, lists, links, images, fenced code blocks).
-- GitHub-style alerts (`> [!NOTE]`, `> [!WARNING]`, etc.) are converted to `<aside>` blocks.
+- GitHub-style alerts (`> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`) are converted to labeled `<aside>` blocks (`note`, `tip`, `important`, `warning`).
 - The first `#` heading in the body is hidden in the UI (title comes from frontmatter).
 - Raw HTML in markdown is escaped by the parser; do not rely on inline `<style>` or `<script>`.
+
+### Authoring style (Google Codelab–like)
+
+Each step should open with **one short paragraph** (what this step accomplishes), then:
+
+1. **`### What you'll do`** — numbered actions only (3–5 items).
+2. **Sections** — `###` headings for concepts; avoid `##` in the body (title bar already shows the step title).
+3. **Callouts** — use `> [!TIP]` / `> [!IMPORTANT]` for one key insight; avoid long tables when bullets work.
+4. **Close** — `**Continue when** …` (one line), not “Mark this step done when…”.
+
+Do not leave `Image (add later)` placeholders in published steps. Add real assets under `content/images/` or omit.
+
+### Official Render Workflows docs (link in workshop steps)
+
+When editing Steps 5–11, prefer these canonical URLs (terminology should match):
+
+- [Intro to Render Workflows](https://render.com/docs/workflows)
+- [Your First Workflow](https://render.com/docs/workflows-tutorial)
+- [Defining Workflow Tasks](https://render.com/docs/workflows-defining)
+- [Triggering Task Runs](https://render.com/docs/workflows-running)
+- [Workflows SDK for TypeScript](https://render.com/docs/workflows-sdk-typescript)
+
+Use `{workflow-slug}/{task-name}` for task identifiers, `RENDER_API_KEY` on the triggering service, and distinguish **run chaining** (inside a workflow) from **cross-service** `startTask` (this workshop).
 
 ## What you can change safely
 

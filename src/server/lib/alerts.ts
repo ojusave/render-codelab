@@ -27,7 +27,10 @@ export function transformGithubAlerts(
       }
       const innerMd = body.join("\n").trimEnd();
       const innerHtml = parseInner(innerMd);
-      const asideClass = kind === "warning" ? "warning" : "special";
+      const asideClass =
+        kind === "warning" || kind === "tip" || kind === "note" || kind === "important"
+          ? kind
+          : "note";
       out.push(`\n<aside class="${asideClass}">${innerHtml}</aside>\n`);
       continue;
     }

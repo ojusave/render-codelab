@@ -1,14 +1,22 @@
 ---
 order: 8
-title: "Dispatch searchOne from the web service"
+title: "Dispatch searchOne from the web"
 duration: 8
 ---
 
-The **ticker-research-workflows** web service still runs [`research()`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/research.ts), but each search will become a remote Workflow run once **Step 10** creates the Workflow service. Synthesis stays local.
+The web service still runs [`research()`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/research.ts), but each search becomes a remote Workflow run after **Step 10**. Synthesis stays on the web service.
 
-This step is **code only**. The app will not complete a search until Step 10. You need a [Render API key](https://render.com/docs/api#1-create-an-api-key) for Step 9 when you deploy the web service.
+This step follows [Triggering Task Runs](https://render.com/docs/workflows-running): initialize the SDK client, call `startTask`, then wait for completion. Code only: searches will not finish until Step 10 wires a live Workflow.
 
-## A. SDK on the server package
+### What you'll do
+
+1. Add `@renderinc/sdk` to `server/`.
+2. Replace in-process `searchOne` with `startTask` + `getTaskRun` polling in `research.ts`.
+3. Push so Step 9 can deploy the web service.
+
+You need a [Render API key](https://render.com/docs/workflows-running#first-create-an-api-key) on the web service (`RENDER_API_KEY`; the SDK reads it automatically per [Triggering Task Runs](https://render.com/docs/workflows-running#2-set-your-api-key)).
+
+### A. SDK on the server
 
 In [`server/package.json`](https://github.com/ojusave/ticker-research-workflows/blob/main/server/package.json):
 
@@ -20,9 +28,9 @@ In [`server/package.json`](https://github.com/ojusave/ticker-research-workflows/
 cd server && npm install
 ```
 
-## B. Replace in `tasks/src/research.ts`
+Import `Render` from `@renderinc/sdk` (not `/workflows`). See [`Render` class](https://render.com/docs/workflows-sdk-typescript#the-render-class).
 
-### Imports
+### B. Update `tasks/src/research.ts`
 
 **Remove:**
 
@@ -43,7 +51,7 @@ const render = new Render()
 
 If `ResearchEvent` is already imported, merge into one line.
 
-### Polling helper (paste after the constants)
+**Polling helper** (paste after the constants):
 
 ```typescript
 async function waitForSearchTask(taskRunId: string): Promise<SearchResult> {
@@ -62,15 +70,9 @@ async function waitForSearchTask(taskRunId: string): Promise<SearchResult> {
 }
 ```
 
-### Inside `searches.map` — replace the `searchOne` call only
+Uses [`getTaskRun`](https://render.com/docs/workflows-sdk-typescript#gettaskrun) until status is terminal (`completed`, `failed`, or `canceled`).
 
-**Was:**
-
-```typescript
-        const result = await searchOne(query, spec, index)
-```
-
-**Becomes:**
+**Inside `searches.map`** — replace only the `searchOne` call:
 
 ```typescript
         const started = await render.workflows.startTask(
@@ -80,14 +82,22 @@ async function waitForSearchTask(taskRunId: string): Promise<SearchResult> {
         const result = await waitForSearchTask(started.taskRunId)
 ```
 
-Leave `onEvent`, `buildQueries`, `synthesize`, and the `Promise.all` structure unchanged.
+- **`taskIdentifier`:** `{workflow-slug}/{task-name}` — same format as the [Dashboard task slug](https://render.com/docs/workflows-running#3-initialize-the-client-and-trigger-a-run).
+- **`inputData`:** positional JSON array matching `searchOne(query, spec, index)` ([task arguments](https://render.com/docs/workflows-defining#task-arguments)).
+- **`started.taskRunId`:** available immediately from [`startTask`](https://render.com/docs/workflows-sdk-typescript#starttask).
 
-## Why poll instead of `started.get()`
+Leave `onEvent`, `buildQueries`, `synthesize`, and the `Promise.all` structure unchanged (four parallel dispatches from the web process).
 
-With **four** parallel `startTask` calls, waiting on the SDK’s SSE-based `.get()` can miss completion. The UI then sits near 50% while the Workflow Dashboard shows **completed**. Polling `getTaskRun` matches what we debugged in the workshop.
+### Why poll instead of `started.get()`
 
-## C. Push
+The SDK docs show `await startedRun.get()` for a **single** run ([Triggering Task Runs](https://render.com/docs/workflows-running#typescript)). With **four** parallel `startTask` calls, `.get()` over SSE can miss completions; the UI may sit near 50% while the Dashboard shows **completed**.
 
-Commit and push. Deploy the web service in **Step 9**. Creating the Workflow on Render waits until **Step 10**.
+For multiple concurrent runs you can also use [`taskRunEvents`](https://render.com/docs/workflows-sdk-typescript#taskrunevents). This workshop uses explicit **`getTaskRun` polling** for clarity.
 
-Mark this step done when `research.ts` is pushed and `npm run build` at repo root succeeds.
+### Push
+
+Commit and push. Deploy the web service in **Step 9**. Create the Workflow in **Step 10**.
+
+**Docs:** [Triggering Task Runs](https://render.com/docs/workflows-running) · [Workflows SDK for TypeScript](https://render.com/docs/workflows-sdk-typescript)
+
+**Continue when** `research.ts` is pushed and `npm run build` at repo root succeeds.

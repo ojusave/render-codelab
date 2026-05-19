@@ -1,26 +1,34 @@
 ---
 order: 10
-title: "Create the Workflow on Render (last)"
+title: "Create the Workflow service"
 duration: 5
 ---
 
-This is the **last build step**. You create the Render **Workflow** service that runs `tasks/`, copy its slug onto the web service, then run end-to-end.
+**Last build step.** Create the Render **Workflow** that runs `tasks/`, set `WORKFLOW_SERVICE_SLUG` on the web service, then verify end-to-end. Follow [Your First Workflow — create a workflow service](https://render.com/docs/workflows-tutorial#4-create-a-workflow-service).
 
 You should already have:
 
-- `searchOne` wrapped in `task()` and `tasks/src/index.ts` importing `./search.js` (Steps 6–7).
-- `research.ts` calling `startTask` + `getTaskRun` (Step 8).
+- `searchOne` in `task()` and `tasks/src/index.ts` (Steps 6–7).
+- `research.ts` using `startTask` + `getTaskRun` (Step 8).
 - Web service deployed (Step 9).
 
-## Push your latest code
+### What you'll do
 
-Push **ticker-research-workflows** to GitHub. The Workflow service builds from the `tasks/` directory on that repo.
+1. Push latest **ticker-research-workflows** to GitHub.
+2. Create a Workflow service with root directory `tasks`.
+3. Set `WORKFLOW_SERVICE_SLUG` on the web service and redeploy.
+4. Run `TSLA` and compare to **workshop-demo**.
 
-## Create the Workflow service
+### Push
 
-1. [Render Dashboard](https://dashboard.render.com/) → **New → Workflow**.
+Push **ticker-research-workflows** to GitHub. The Workflow builds from the `tasks/` directory.
+
+### Create the Workflow
+
+1. [Render Dashboard](https://dashboard.render.com/) → **New → Workflow** ([tutorial](https://render.com/docs/workflows-tutorial#4-create-a-workflow-service)).
 2. Connect **your** `ticker-research-workflows` repository.
-3. **Root Directory:** `tasks` (folder name only).
+3. **Language:** Node (TypeScript).
+4. **Root Directory:** `tasks` (folder name only, not `cd tasks`).
 
 | Field | Value |
 |--------|--------|
@@ -28,26 +36,23 @@ Push **ticker-research-workflows** to GitHub. The Workflow service builds from t
 | Build Command | `npm install && npm run build` |
 | Start Command | `npm run start` |
 
-4. **Environment:** `EXA_API_KEY` ([Exa dashboard](https://dashboard.exa.ai/)).
-5. Deploy. Wait until live.
-6. **Tasks** tab → confirm **`searchOne`**.
-7. Copy the service **slug** (e.g. `ticker-research-workflows`).
+5. **Environment:** `EXA_API_KEY` ([Exa dashboard](https://dashboard.exa.ai/)).
+6. Click **Deploy Workflow**. Wait until live.
+7. **Tasks** tab → confirm **`searchOne`** is registered ([viewing tasks](https://render.com/docs/workflows-tutorial#4-create-a-workflow-service)).
+8. Copy the workflow service **slug** (for example `ticker-research-workflows`). This is the `{workflow-slug}` in `{workflow-slug}/searchOne`.
 
 > [!WARNING]
-> Do not put `cd tasks` in **Root Directory**. Use `tasks` as root, or put `cd tasks &&` only on build/start commands.
+> Do not put `cd tasks` in **Root Directory**. Use `tasks` as root, or put `cd tasks &&` only on build/start commands if the tutor uses that layout.
 
-> [!NOTE]
-> **Image (add later):** Dashboard Workflow + root `tasks` — `content/images/10-dashboard-workflow-root.png`.
-
-## Wire the web service to this Workflow
+### Wire the web service
 
 On your **Web Service** from Step 9:
 
-1. Set **`WORKFLOW_SERVICE_SLUG`** to the slug you copied (exact match).
-2. Confirm **`RENDER_API_KEY`** and **`ANTHROPIC_API_KEY`** are set.
-3. **Redeploy** the web service (env-only change is enough).
+1. Set **`WORKFLOW_SERVICE_SLUG`** to the slug you copied (exact match for `startTask`).
+2. Confirm **`RENDER_API_KEY`** ([workflows-running](https://render.com/docs/workflows-running#2-set-your-api-key)) and **`ANTHROPIC_API_KEY`**.
+3. **Redeploy** the web service.
 
-## Verify end-to-end
+### Verify
 
 1. Open **your** web URL.
 2. Query `TSLA`.
@@ -55,20 +60,13 @@ On your **Web Service** from Step 9:
 4. Workflow → **Runs** → `searchOne` shows retries when `maybeFail` fires.
 5. Memo streams and completes.
 
-## Compare to workshop-demo
+Optional debug: [manually start `searchOne`](https://render.com/docs/workflows-running#running-manually) from the Dashboard with JSON args `[ "TSLA", { … }, 0 ]` before testing the full UI.
 
-Run the same ticker on the **shared workshop-demo** tab and on your URL. Same flaky `maybeFail` in the repo; Workflow retries should make your deploy complete far more often.
+### Compare to workshop-demo
 
-| | workshop-demo (tutor URL) | Your ticker-research-workflows |
-|--|---------------------------|--------------------------------|
-| Searches | In the web process | Workflow task + retries |
-| Deploy | Tutor only | You (web + Workflow) |
+Run the same ticker on the **shared workshop-demo** tab and on your URL. Same `maybeFail` in the repo; [automatic retries](https://render.com/docs/workflows-defining#retry-logic) should make your deploy complete far more often.
 
-> [!NOTE]
-> **Image (add later):** four green cards + memo — `content/images/10-ticker-research-success.png`.
+> [!TIP]
+> Optional: [Render CLI](https://render.com/docs/cli) 2.16+ with `render workflows create --root-dir tasks`.
 
-## Optional: CLI
-
-[Render CLI](https://render.com/docs/cli) 2.16+: `render workflows create` with `--root-dir tasks`. See [Deploying Workflows](https://render.com/docs/workflows/deploying).
-
-Mark this step done when one full research run succeeds on **your** web URL.
+**Continue when** one full research run succeeds on **your** web URL.
