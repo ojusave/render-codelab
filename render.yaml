@@ -1,0 +1,46 @@
+# Live Workshop Codelab — Blueprint for Render Web Service + Postgres
+# https://render.com/docs/blueprint-spec
+#
+# After first deploy: set TUTOR_PASSWORD and VITE_GITHUB_REPO_URL in the Dashboard
+# (Blueprint env vars marked sync: false are entered manually).
+
+previews:
+  generation: automatic
+
+databases:
+  - name: workshop-codelab-db
+    plan: basic-256mb
+    databaseName: workshop_codelab
+    user: workshop
+
+services:
+  - type: web
+    name: workshop-codelab
+    runtime: node
+    plan: starter
+    rootDir: .
+    healthCheckPath: /healthz
+    # Install devDependencies so tsx can run migrations at startup.
+    buildCommand: NODE_ENV=development npm ci && npm run build
+    preDeployCommand: npm run db:migrate
+    postDeployCommand: npm run db:seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: workshop-codelab-db
+          property: connectionString
+      - key: SESSION_SIGNING_SECRET
+        generateValue: true
+      - key: TUTOR_PASSWORD
+        sync: false
+      - key: VITE_GITHUB_REPO_URL
+        sync: false
+      - key: VITE_DEFAULT_SESSION_CODE
+        value: cascadia-2026
+      - key: SEED_SESSION_CODE
+        value: cascadia-2026
