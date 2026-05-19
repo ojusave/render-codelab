@@ -1,7 +1,7 @@
 ---
 order: 11
 title: "Troubleshooting ticker-research-workflows"
-duration: 10
+duration: 3
 ---
 
 Split logs: **Web Service** (Express, synthesis, `startTask`) vs **Workflow** (`tasks/`, Exa, retries).

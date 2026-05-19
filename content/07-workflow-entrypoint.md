@@ -1,7 +1,7 @@
 ---
 order: 7
 title: "Workflow entrypoint in tasks/"
-duration: 10
+duration: 2
 ---
 
 The Workflow **runner** is a long-lived Node process. On start it must load every file that calls `task()`. This step adds that entrypoint. You still do **not** create anything on Render until **Step 10**.

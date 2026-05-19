@@ -1,7 +1,7 @@
 ---
 order: 5
 title: "Add @renderinc/sdk to tasks/"
-duration: 8
+duration: 2
 ---
 
 All changes in this step stay in the **`tasks/`** package. You are not creating a Render service yet.

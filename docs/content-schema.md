@@ -13,7 +13,7 @@ Markdown files in this folder drive the workshop steps. The **app shell** (navig
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `duration` | number | Estimated minutes; shown in the drawer and title bar |
+| `duration` | number | Estimated minutes for one live block; shown in the drawer and title bar. All steps should sum to your slot (this workshop targets **45 minutes** for steps 0–11). |
 
 Example:
 

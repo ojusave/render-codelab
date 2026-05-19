@@ -52,7 +52,7 @@ Redeploy after editing Markdown under `content/` (loaded at server startup in pr
 
 ## Workshop content
 
-11 steps: **workshop-demo** → **ticker-research-workflows** with [Render Workflows](https://render.com/docs/workflows). See `docs/content-schema.md` for the author contract.
+12 steps (~**45 min** in-room): **workshop-demo** → **ticker-research-workflows** with [Render Workflows](https://render.com/docs/workflows). See `docs/content-schema.md` for the author contract.
 
 ## Add or change steps
 

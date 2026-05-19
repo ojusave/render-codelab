@@ -1,7 +1,7 @@
 ---
 order: 1
 title: "Open workshop-demo and clone the repo"
-duration: 10
+duration: 3
 ---
 
 The baseline app lives in **[`ojusave/workshop-demo`](https://github.com/ojusave/workshop-demo)** on GitHub. In the room you use a **shared deploy** of that repo so nobody burns time creating Exa and Anthropic keys before the lesson starts.

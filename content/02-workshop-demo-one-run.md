@@ -1,7 +1,7 @@
 ---
 order: 2
 title: "Trace one run through workshop-demo"
-duration: 15
+duration: 4
 ---
 
 Pick a query on the **shared workshop-demo** URL, for example `TSLA`. This step maps what you see in the UI to concrete files in the repo you cloned.

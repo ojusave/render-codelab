@@ -1,7 +1,7 @@
 ---
 order: 10
 title: "Create the Workflow on Render (last)"
-duration: 25
+duration: 5
 ---
 
 This is the **last build step**. You create the Render **Workflow** service that runs `tasks/`, copy its slug onto the web service, then run end-to-end.

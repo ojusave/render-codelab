@@ -1,7 +1,7 @@
 ---
 order: 4
 title: "Clone ticker-research-workflows"
-duration: 10
+duration: 2
 ---
 
 From here you work in **[`ojusave/ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows)**. There is **no shared deploy** for this repo in the room: you will write code locally, push to **your** GitHub fork (or the org repo if the tutor says so), and deploy **your** Workflow + web services at the end.

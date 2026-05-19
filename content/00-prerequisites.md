@@ -1,7 +1,7 @@
 ---
 order: 0
 title: "Before you begin"
-duration: 5
+duration: 2
 ---
 
 ## Overview
@@ -9,6 +9,9 @@ duration: 5
 In this workshop you will take a small ticker-research app from **fragile in-process parallelism** to **isolated Render Workflow tasks** with retries. The tutor runs a shared baseline on Render so everyone can see the same failure mode first. You will clone that code, change it in [`ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows), and deploy your own web service and Workflow at the end.
 
 This page is setup only. Step 1 starts with the shared demo.
+
+> [!NOTE]
+> **Pace:** the sidebar times add up to about **45 minutes** of guided exercise. The tutor keeps the room moving; deploy steps (9–10) are tight. If Render builds lag, finish coding through Step 8 and let the tutor carry deploys on the projector.
 
 ### What you'll learn
 

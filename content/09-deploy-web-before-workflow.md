@@ -1,7 +1,7 @@
 ---
 order: 9
 title: "Deploy the web service (before Workflow)"
-duration: 15
+duration: 4
 ---
 
 Deploy the **web** half of **ticker-research-workflows** from repo root via [`render.yaml`](https://github.com/ojusave/ticker-research-workflows/blob/main/render.yaml). You do **not** create a Workflow service in this step.

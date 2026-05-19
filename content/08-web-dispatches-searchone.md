@@ -1,7 +1,7 @@
 ---
 order: 8
 title: "Dispatch searchOne from the web service"
-duration: 25
+duration: 8
 ---
 
 The **ticker-research-workflows** web service still runs [`research()`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/research.ts), but each search will become a remote Workflow run once **Step 10** creates the Workflow service. Synthesis stays local.

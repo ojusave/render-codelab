@@ -1,7 +1,7 @@
 ---
 order: 3
 title: "Why workshop-demo usually fails"
-duration: 12
+duration: 4
 ---
 
 The shared **workshop-demo** deploy is configured to fail often on purpose. The goal is to see how **one throwing promise** inside `Promise.all` ends the whole run.

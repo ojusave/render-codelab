@@ -1,7 +1,7 @@
 ---
 order: 6
 title: "Wrap searchOne in task()"
-duration: 20
+duration: 6
 ---
 
 Edit **only** [`tasks/src/search.ts`](https://github.com/ojusave/ticker-research-workflows/blob/main/tasks/src/search.ts) in **ticker-research-workflows**. Do not touch `maybeFail`, `getExa`, or the Exa `searchAndContents` body. The workshop keeps the same flaky search; Workflows adds retries around it.
