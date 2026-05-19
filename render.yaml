@@ -20,9 +20,9 @@ services:
     runtime: node
     plan: starter
     healthCheckPath: /healthz
-    # Build client + server on Render; pre-deploy uses compiled JS (no tsx).
-    buildCommand: npm install --include=dev && npm run build
-    preDeployCommand: npm run db:migrate && npm run db:seed
+    # Install devDependencies for Vite/tsc; run migrations via tsx in pre-deploy (no dist/cli dependency).
+    buildCommand: npm ci --include=dev && npm run build
+    preDeployCommand: npx tsx src/server/cli/migrate.ts && npx tsx src/server/cli/seed.ts
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
