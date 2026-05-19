@@ -19,7 +19,7 @@ Repo: [github.com/ojusave/render-codelab](https://github.com/ojusave/render-code
 1. Open the link above (or **New → Blueprint** and select the repo).
 2. When prompted, set **`TUTOR_PASSWORD`** (shared tutor login for `/tutor/:sessionCode`).
 3. Click **Apply**. The Blueprint provisions **Postgres** (`workshop-codelab-db`) and the **web service** (`workshop-codelab`).
-4. First deploy runs migrations and `db:seed` for session **`cascadia-2026`**.
+4. First deploy runs `db:migrate` and `db:seed` (via `preDeployCommand`) for session **`cascadia-2026`**.
 5. Open the service URL → **Join student session** or `/s/cascadia-2026`. Tutor: `/tutor/cascadia-2026`.
 
 `SESSION_SIGNING_SECRET` is auto-generated. `VITE_GITHUB_REPO_URL` defaults to this repo in `render.yaml`.

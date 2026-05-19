@@ -10,6 +10,7 @@ previews:
 databases:
   - name: workshop-codelab-db
     plan: basic-256mb
+    postgresMajorVersion: "16"
     databaseName: workshop_codelab
     user: workshop
 
@@ -18,12 +19,10 @@ services:
     name: workshop-codelab
     runtime: node
     plan: starter
-    rootDir: .
     healthCheckPath: /healthz
-    # Install devDependencies so tsx can run migrations at startup.
+    # Install devDependencies so Vite/tsc/tsx are available at build and pre-deploy.
     buildCommand: NODE_ENV=development npm ci && NODE_ENV=development npm run build
-    preDeployCommand: npm run db:migrate
-    postDeployCommand: npm run db:seed
+    preDeployCommand: npm run db:migrate && npm run db:seed
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
