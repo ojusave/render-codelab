@@ -1,55 +1,64 @@
 ---
 order: 0
-title: "Prerequisites"
+title: "Before you begin"
 duration: 5
 ---
 
-Read this before Step 1. You can mark it done once you have the accounts and tabs ready.
+## Overview
 
-## In the room
+In this workshop you will take a small ticker-research app from **fragile in-process parallelism** to **isolated Render Workflow tasks** with retries. The tutor runs a shared baseline on Render so everyone can see the same failure mode first. You will clone that code, change it in [`ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows), and deploy your own web service and Workflow at the end.
 
-| Item | Details |
-|------|---------|
-| **This codelab** | You are in a student session (URL from the tutor). Use your name so you show up on the tutor screen. |
-| **workshop-demo** | Shared app URL from the tutor (not your deploy). Used in Steps 1–3 only. |
-| **Editor** | VS Code, Cursor, or similar. Terminal for `git clone`. |
-| **Git** | Clone [`ojusave/workshop-demo`](https://github.com/ojusave/workshop-demo) and later [`ojusave/ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows). |
+This page is setup only. Step 1 starts with the shared demo.
 
-You do **not** need a working local run of either repo during the workshop. Clones are for reading and editing files.
+### What you'll learn
 
-## Accounts you will need later
+- How the baseline app streams research progress over SSE.
+- Why `Promise.all` plus a random failure in one search aborts the whole run.
+- How to register a `searchOne` task with `@renderinc/sdk`, dispatch it from the web service, and poll for results.
+- How to split **web** and **Workflow** services on Render and wire them with `WORKFLOW_SERVICE_SLUG`.
 
-You do **not** need all of these before Step 1. Gather them before you deploy **your** app (Steps 9–10).
+### What you'll need (in the room now)
 
-| Account | Used for |
-|---------|----------|
-| [GitHub](https://github.com/) | Clone repos; push **ticker-research-workflows** to your fork or the org repo the tutor specifies. |
-| [Render](https://render.com/) | Workflow service (Step 8) and web deploy (Step 10). [Sign up](https://dashboard.render.com/register) if you do not have a workspace. |
-| [Render API key](https://render.com/docs/api#1-create-an-api-key) | Web service calls `startTask` / `getTaskRun` (Step 9). |
-| [Exa API key](https://dashboard.exa.ai/) | Workflow service runs Exa in `searchOne` (**Step 10**, last). |
-| [Anthropic API key](https://console.anthropic.com/) | Web service runs Claude synthesis (Step 9). |
+- **This codelab:** you joined a student session (URL from the tutor) and entered a display name.
+- **Browser tab** for the tutor's **workshop-demo** URL (shared deploy, not yours).
+- **Git** and a terminal to clone repos.
+- **Editor** such as VS Code or Cursor.
 
-The tutor’s **workshop-demo** deploy already has Exa and Anthropic configured. You only enter those keys on **your** Render services.
+You do **not** need `npm run dev` working locally unless the tutor asks. Clones are for reading and editing files during the lesson.
 
-## Repos (reference)
+### What you'll need (before you deploy)
 
-| Repo | Role in the workshop |
-|------|----------------------|
-| [`ojusave/workshop-demo`](https://github.com/ojusave/workshop-demo) | Baseline app; shared demo; clone to read code. |
-| [`ojusave/ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows) | You implement Workflows here; deploy at the end. |
+Gather these before **Step 9** (deploy web) and **Step 10** (create Workflow). They are not required for Steps 1–8.
 
-Starting branch for **ticker-research-workflows** should match **workshop-demo** (plain `searchOne`, no Workflow wiring). If your clone already has `task()` and `Render` in `research.ts`, check out the branch the tutor names (e.g. `workshop-start`).
+- [GitHub](https://github.com/) account to clone and push [`ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows).
+- [Render](https://render.com/) account and workspace. [Create one](https://dashboard.render.com/register) if needed.
+- [Render API key](https://render.com/docs/api#1-create-an-api-key) for `startTask` / `getTaskRun` on your web service.
+- [Anthropic API key](https://console.anthropic.com/) for Claude synthesis on your **web** service.
+- [Exa API key](https://dashboard.exa.ai/) on your **Workflow** service (Step 10), where `searchOne` runs.
 
-## Optional reading
+The tutor's **workshop-demo** already has Exa and Anthropic configured. You only add those keys to **your** Render services.
 
-- [Intro to Render Workflows](https://render.com/docs/workflows) (skim; you will follow steps in order).
-- [file-processing example](https://github.com/render-examples/render-workflows-examples-ts/tree/main/file-processing) (TypeScript task registration pattern).
+> [!NOTE]
+> Optional skim: [Intro to Render Workflows](https://render.com/docs/workflows) and the TypeScript [file-processing example](https://github.com/render-examples/render-workflows-examples-ts/tree/main/file-processing) for how `task()` registration looks.
 
-## Checklist
+## Repositories
 
-- [ ] Codelab session joined (name entered).
-- [ ] **workshop-demo** URL open in a browser tab.
-- [ ] Git installed; ready to clone.
-- [ ] Render + GitHub logins you can access when Steps 9–10 start.
+| Repository | Your role |
+|------------|-----------|
+| [`ojusave/workshop-demo`](https://github.com/ojusave/workshop-demo) | Read-only reference and shared demo (Steps 1–3). Clone to follow along in the editor. |
+| [`ojusave/ticker-research-workflows`](https://github.com/ojusave/ticker-research-workflows) | You implement Workflows here (Steps 4–10). Deploy from your fork or the branch the tutor names. |
 
-Mark this step done when the checklist is satisfied.
+When you clone **ticker-research-workflows**, the starting tree should match **workshop-demo**: plain `export async function searchOne`, in-process `research()`. If your clone already has `task()` and Workflow polling wired, check out the branch the tutor provides (for example `workshop-start`).
+
+```bash
+# Reference only — run when Step 1 or Step 4 tells you to
+git clone https://github.com/ojusave/workshop-demo.git
+```
+
+## Ready check
+
+1. Student session joined and your name appears on the tutor dashboard.
+2. **workshop-demo** loads in a browser tab.
+3. Git and an editor are available at your seat.
+
+When those three are true, continue to **Step 1**.
